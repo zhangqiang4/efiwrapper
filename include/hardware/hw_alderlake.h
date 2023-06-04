@@ -1,8 +1,6 @@
 /*
- * Copyright (c) 2016, Intel Corporation
+ * Copyright (c) 2018, Intel Corporation
  * All rights reserved.
- *
- * Author: Jérémy Compostella <jeremy.compostella@intel.com>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -29,61 +27,37 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _STORAGE_H_
-#define _STORAGE_H_
+#ifndef __HW_TIGERLAKE__
+#define __HW_TIGERLAKE__
 
-#include <efi.h>
-#include <efiapi.h>
+/* PCI device id of OTG */
+#define XDCI_PID         0x9D30
+#define XHCI_PID         0x9D2F
 
-typedef struct storage {
-	EFI_STATUS (*init)(struct storage *s);
-	EFI_LBA (*read)(struct storage *s, EFI_LBA start, EFI_LBA count,
-			void *buf);
-	EFI_LBA (*write)(struct storage *s, EFI_LBA start, EFI_LBA count,
-			 const void *buf);
-	EFI_STATUS (*erase)(struct storage *s, EFI_LBA start, UINTN Size);
-	UINT8 pci_function;
-	UINT8 pci_device;
-	EFI_LBA blk_cnt;
-	UINT32 blk_sz;
-	void *priv;
-} storage_t;
+/* PCI device id of EMMC controller */
+#define EMMC_DEVICEID    0xA0C4
 
-enum storage_type {
-	STORAGE_EMMC,
-	STORAGE_UFS,
-	STORAGE_SDCARD,
-	STORAGE_SATA,
-	STORAGE_NVME,
-	STORAGE_VIRTUAL,
-	STORAGE_ALL
-};
+/* UFS */
+#define UFS_PCI_DID    0xA0FA
 
-typedef enum {
-	OsBootDeviceSata,
-	OsBootDeviceSd,
-	OsBootDeviceEmmc,
-	OsBootDeviceUfs,
-	OsBootDeviceSpi,
-	OsBootDeviceUsb,
-	OsBootDeviceNvme,
-	OsBootDeviceMemory,
-	OsBootDeviceVirtual,
-	OsBootDeviceMax
-} SBL_OS_BOOT_MEDIUM_TYPE;
+/* NVME */
+#define NVME_PCI_DID    0xA80A
+#define NVME_DISKBUS    0x0000 //bbddff
 
-typedef struct boot_dev {
-	enum storage_type type;
-	UINT32 diskbus;
-} boot_dev_t;
+/* serial port base address */
+#if 0
+#define SERIAL_BASEADDR       0x2008
+#define SERIAL_PCI_DID        0x9922
+#define HW_SERIAL_TYPE        CB_SERIAL_TYPE_IO_MAPPED
+#define HW_SERIAL_REG_WIDTH   1
+#else
+#define SERIAL_BASEADDR 0x82404000
+#define HW_SERIAL_REG_WIDTH 4
+#define HW_SERIAL_TYPE 2
+#endif
 
-EFI_STATUS storage_init(EFI_SYSTEM_TABLE *st, storage_t *storage,
-			EFI_HANDLE *handle_p);
-EFI_STATUS storage_free(EFI_SYSTEM_TABLE *st, EFI_HANDLE handle);
+/* TCO base address, to be determined */
+#define TCOBASE    (0xffffffff)
 
-EFI_STATUS identify_boot_media();
+#endif /* __HW_TIGERLAKE__ */
 
-boot_dev_t* get_boot_media();
-UINT8 get_boot_media_device_path_type(void);
-uint32_t get_diskbus();
-#endif	/* _STORAGE_H_ */
