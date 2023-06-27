@@ -32,9 +32,14 @@
 #include <kconfig.h>
 #include <libpayload-config.h>
 #include <libpayload.h>
-
+#include <ewarg.h>
+#include <ewlog.h>
 #include <hwconfig.h>
 #include "s8250mem32.h"
+
+#define SBL_SERIAL_BASEADDR "serail_baseaddr"
+#define SBL_SERIAL_TYPE "serail_type"
+#define SBL_SERIAL_REGWIDTH "serail_regwidth"
 
 #ifndef SERIAL_BASEADDR
 #include <pci/pci.h>
@@ -55,10 +60,28 @@ static uint32_t GetPciUartBase(uint32_t pci_did)
 static EFI_STATUS s8250mem32_init(__attribute__((__unused__)) EFI_SYSTEM_TABLE *st)
 {
 	static struct cb_serial s;
+	const char *val;
 
-	s.baseaddr = SERIAL_BASEADDR;
-	s.regwidth = HW_SERIAL_REG_WIDTH;
-	s.type = HW_SERIAL_TYPE;
+	val = ewarg_getval(SBL_SERIAL_BASEADDR);
+	if (val) {
+		s.baseaddr = (UINT32)strtoull(val, NULL, 16);
+	} else {
+		s.baseaddr = SERIAL_BASEADDR;
+	}
+
+	val = ewarg_getval(SBL_SERIAL_TYPE);
+	if (val) {
+		s.type = (UINT32)strtoull(val, NULL, 16);
+	} else {
+		s.type = HW_SERIAL_TYPE;
+	}
+
+	val = ewarg_getval(SBL_SERIAL_REGWIDTH);
+	if (val) {
+		s.regwidth = (UINT32)strtoull(val, NULL, 16);
+	} else {
+		s.regwidth = HW_SERIAL_REG_WIDTH;
+	}
 
 	lib_sysinfo.serial = &s;
 

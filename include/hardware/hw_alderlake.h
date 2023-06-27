@@ -27,37 +27,20 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __HW_TIGERLAKE__
-#define __HW_TIGERLAKE__
+#ifndef __HW_ALDERLAKE__
+#define __HW_ALDERLAKE__
 
 /* PCI device id of OTG */
 #define XDCI_PID         0x9D30
 #define XHCI_PID         0x9D2F
-
-/* PCI device id of EMMC controller */
-#define EMMC_DEVICEID    0xA0C4
-
-/* UFS */
-#define UFS_PCI_DID    0xA0FA
-
 /* NVME */
 #define NVME_PCI_DID    0xA80A
 #define NVME_DISKBUS    0x0000 //bbddff
 
 /* serial port base address */
-#if 0
-#define SERIAL_BASEADDR       0x2008
-#define SERIAL_PCI_DID        0x9922
-#define HW_SERIAL_TYPE        CB_SERIAL_TYPE_IO_MAPPED
-#define HW_SERIAL_REG_WIDTH   1
-#else
-#define SERIAL_BASEADDR 0x82404000
+#define SERIAL_BASEADDR     0x824D1000
 #define HW_SERIAL_REG_WIDTH 4
-#define HW_SERIAL_TYPE 2
-#endif
+#define HW_SERIAL_TYPE      2
 
-/* TCO base address, to be determined */
-#define TCOBASE    (0xffffffff)
-
-#endif /* __HW_TIGERLAKE__ */
+#endif /* __HW_ALDERLAKE__ */
 
