@@ -98,11 +98,21 @@ static uint8_t checksum(uint8_t *buf, size_t size)
 static struct RSDP_TABLE *lookup_for_rdsp(char *from)
 {
 	char *p;
+	/*
+	 * The  0x40e stores EBDA segment address, need left shift 4 bits
+	 * to get EBDA physical address.
+	 */
+	uint16_t *ebda_seg_addr = (uint16_t *)0x40e;
 
 	if (!from)
 		from = (char *)0xE0000;
 
 	for (p = from; p < (char *)0x100000; p += 16)
+		if (!memcmp(p, RSDP_MAGIC, sizeof(RSDP_MAGIC)))
+			return (struct RSDP_TABLE *)p;
+
+	from = (char *)((*ebda_seg_addr) << 4);
+	for (p = from; p < (from + 0x400); p += 16)
 		if (!memcmp(p, RSDP_MAGIC, sizeof(RSDP_MAGIC)))
 			return (struct RSDP_TABLE *)p;
 
