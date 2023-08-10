@@ -27,12 +27,12 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef __HW_ALDERLAKE__
-#define __HW_ALDERLAKE__
+#ifndef __HW_RAPTORLAKE__
+#define __HW_RAPTORLAKE__
 
 /* PCI device id of OTG */
-#define XDCI_PID         0x9D30
-#define XHCI_PID         0x9D2F
+#define XDCI_PID         0x51EE
+#define XHCI_PID         0x51ED
 /* NVME */
 #define NVME_PCI_DID    0xA80A
 #define NVME_DISKBUS    0x0000 //bbddff
@@ -42,5 +42,5 @@
 #define HW_SERIAL_REG_WIDTH 4
 #define HW_SERIAL_TYPE      2
 
-#endif /* __HW_ALDERLAKE__ */
+#endif /* __HW_RAPTORLAKE__ */
 

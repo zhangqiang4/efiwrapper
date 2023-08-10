@@ -41,7 +41,7 @@
     #include "hw_tigerlake.h"
 #elif defined(PLATFORM_CELADON)
 
-    #include "hw_alderlake.h"
+    #include "hw_raptorlake.h"
 #elif defined(PLATFORM_KABYLAKE)
 
     #include "hw_kabylake.h"
