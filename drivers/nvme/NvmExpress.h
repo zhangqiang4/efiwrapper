@@ -28,8 +28,23 @@
 #define EFI_D_INFO    "NVME Info: "
 #define EFI_D_ERROR   "NVME Error: "
 
+#ifdef DISABLE_DEBUG_PRINT
+#define DEBUG_MESSAGES 0
+#else
+#ifdef USER
+#define DEBUG_MESSAGES 0
+#else
+#define DEBUG_MESSAGES 1
+#endif
+#endif
+
+#if DEBUG_MESSAGES
 #define nvme_dbg(a, ...) printf(a __VA_ARGS__)
 #define DEBUG_NVME(a) (nvme_dbg a)
+#else
+#define nvme_dbg(a, ...)
+#define DEBUG_NVME(a)
+#endif
 
 #define DEBUG_CODE_BEGIN() if (0) {
 #define DEBUG_CODE_END() }
