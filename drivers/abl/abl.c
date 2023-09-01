@@ -146,6 +146,31 @@ static EFI_STATUS set_smbios_fields(void)
 	return EFI_SUCCESS;
 }
 
+static EFI_STATUS set_secureboot_efi_variable()
+{
+	ewvar_t *var;
+	const char *val;
+	UINT32 secure_boot;
+	EFI_GUID global_guid = EFI_GLOBAL_VARIABLE;
+
+	/* Set SecureBoot efi variable */
+	val = ewarg_getval("SecureBoot");
+	if (!val) {
+		return EFI_SUCCESS;
+	}
+
+	secure_boot = (UINT32)strtoull(val, NULL, 16);
+
+	var = ewvar_new(L"SecureBoot", &global_guid, EFI_VARIABLE_BOOTSERVICE_ACCESS, \
+		sizeof(secure_boot), (void*)&secure_boot);
+	if (!var)
+		return EFI_OUT_OF_RESOURCES;
+
+	ewvar_add(var);
+
+	return EFI_SUCCESS;
+}
+
 extern ewvar_storage_t reboot_target_storage;
 
 static EFI_STATUS abl_init(__attribute__((__unused__)) EFI_SYSTEM_TABLE *st)
@@ -154,6 +179,8 @@ static EFI_STATUS abl_init(__attribute__((__unused__)) EFI_SYSTEM_TABLE *st)
 		return EFI_INVALID_PARAMETER;
 
 	ewvar_register_storage(&reboot_target_storage);
+
+	set_secureboot_efi_variable();
 
 	return set_smbios_fields();
 }
