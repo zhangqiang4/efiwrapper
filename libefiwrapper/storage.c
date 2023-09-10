@@ -60,9 +60,9 @@
 
 static EFI_GUID dp_guid = DEVICE_PATH_PROTOCOL;
 
-#define ABL_BDEV "ABL.bdev"
-#define ABL_DISKBUS "ABL.diskbus"
-#define ABL_BDEVLIST "ABL.bootdevices"
+#define BDEV "bdev"
+#define DISKBUS "diskbus"
+#define BDEVLIST "bootdevices"
 
 static boot_dev_t boot_dev = {
 	.type = STORAGE_NVME,
@@ -243,7 +243,7 @@ EFI_STATUS identify_flash_media(boot_dev_t* pdev)
 	OS_BOOT_DEVICE_LIST* plist;
 	SBL_OS_BOOT_MEDIUM_TYPE type;
 
-	val = ewarg_getval(ABL_BDEVLIST);
+	val = ewarg_getval(BDEVLIST);
 	if (!val) {
 		ewdbg("No devlist, select default");
 		return EFI_SUCCESS;
@@ -280,12 +280,43 @@ EFI_STATUS identify_flash_media(boot_dev_t* pdev)
 	return EFI_SUCCESS;
 }
 
+/* Get diskbus of the first media with media_type type */
+uint32_t get_media_diskbus(SBL_OS_BOOT_MEDIUM_TYPE media_type)
+{
+	UINT32 i;
+	const char *val;
+	OS_BOOT_DEVICE_LIST* plist;
+	SBL_OS_BOOT_MEDIUM_TYPE type;
+
+	if (boot_dev.type == convert_sbl_dev_type(media_type))
+		return boot_dev.diskbus;
+
+	val = ewarg_getval(BDEVLIST);
+	if (!val) {
+		ewdbg("No devlist, select default");
+		return 0;
+	}
+
+	plist = (OS_BOOT_DEVICE_LIST*)(UINTN)strtoull(val, NULL, 16);
+
+	for (i = 0; i < plist->BootDeviceCount; i++) {
+		type = (SBL_OS_BOOT_MEDIUM_TYPE)(plist->BootDevice[i].DevType);
+		if (type == media_type) {
+			return plist->BootDevice[i].DevAddr;
+		}
+	}
+
+	ewerr("Failed to find media with type %x", media_type);
+
+	return 0;
+}
+
 EFI_STATUS identify_boot_media()
 {
 	const char *val;
 	size_t len;
 
-	val = ewarg_getval("bdev");
+	val = ewarg_getval(BDEV);
 	if (!val)
 		return EFI_SUCCESS;
 
@@ -301,12 +332,14 @@ EFI_STATUS identify_boot_media()
 		boot_dev.type = STORAGE_VIRTUAL;
 	else if ((!strncmp(val, "SPI", len)) || (!strncmp(val, "MEM", len))) //Fastboot case
 		identify_flash_media(&boot_dev);
+	else if (!strncmp(val, "USB", len))
+		boot_dev.type = STORAGE_USB;
 
 	//if diskbus is already get from boot option list
 	if (boot_dev.diskbus != 0)
 		return EFI_SUCCESS;
 
-	val = ewarg_getval("diskbus");
+	val = ewarg_getval(DISKBUS);
 	if (!val)
 		return EFI_SUCCESS;
 
@@ -321,7 +354,7 @@ boot_dev_t* get_boot_media()
 	return &boot_dev;
 }
 
-uint32_t get_diskbus()
+uint32_t get_bootdev_diskbus()
 {
 	return boot_dev.diskbus;
 }

@@ -49,7 +49,7 @@ static EFI_STATUS _init(storage_t *s)
 	pcidev_t pci_dev = 0;
 	size_t i,j;
 
-	pci_dev = get_diskbus();
+	pci_dev = get_media_diskbus(OsBootDeviceNvme);
 	DEBUG_NVME ((EFI_D_INFO, "pci dev = 0x%X\n", pci_dev));
 	if (pci_dev == 0){
 		for (i = 0; i < ARRAY_SIZE(SUPPORTED_DEVICES); i++)

@@ -56,6 +56,7 @@ enum storage_type {
 	STORAGE_SATA,
 	STORAGE_NVME,
 	STORAGE_VIRTUAL,
+	STORAGE_USB,
 	STORAGE_ALL
 };
 
@@ -85,5 +86,6 @@ EFI_STATUS identify_boot_media();
 
 boot_dev_t* get_boot_media();
 UINT8 get_boot_media_device_path_type(void);
-uint32_t get_diskbus();
+uint32_t get_bootdev_diskbus();
+uint32_t get_media_diskbus(SBL_OS_BOOT_MEDIUM_TYPE media_type);
 #endif	/* _STORAGE_H_ */
