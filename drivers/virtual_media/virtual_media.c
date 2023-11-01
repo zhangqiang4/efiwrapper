@@ -161,7 +161,8 @@ static EFI_STATUS storage_virtual_media_init(EFI_SYSTEM_TABLE *st)
 	if (!boot_dev)
 		return EFI_INVALID_PARAMETER;
 
-	boot_dev->type = STORAGE_VIRTUAL;
+	if (boot_dev->type != STORAGE_VIRTUAL)
+		return EFI_SUCCESS;
 
 	storage_virtual_media.pci_device = (boot_dev->diskbus >> 8) & 0xff;
 	storage_virtual_media.pci_function = boot_dev->diskbus & 0xff;
