@@ -37,6 +37,13 @@
 
 #define SMBIOS_UNDEFINED "N/A"
 
+#define offsetof(st, m) __builtin_offsetof(st, m)
+//copy from celadon/hardware/intel/kernelflinger/include/smbios.h
+#define TYPE_BIOS	0
+#define TYPE_PRODUCT	1
+#define TYPE_BOARD	2
+#define TYPE_CHASSIS	3
+
 EFI_STATUS smbios_init(EFI_SYSTEM_TABLE *st);
 EFI_STATUS smbios_free(EFI_SYSTEM_TABLE *st);
 EFI_STATUS smbios_set(UINT8 type, UINT8 offset, const char *value);
