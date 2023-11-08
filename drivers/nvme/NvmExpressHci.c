@@ -16,7 +16,7 @@
 #include <efi.h>
 #include <efilib.h>
 #include <arch/io.h>
-
+#include "smbios.h"
 #include "NvmExpress.h"
 
 /**
@@ -803,7 +803,7 @@ NvmeControllerInit (
 	NVME_AQA                        Aqa;
 	NVME_ASQ                        Asq;
 	NVME_ACQ                        Acq;
-	UINT8                           Sn[21];
+	UINT8                           Sn[9];
 	UINT8                           Mn[41];
 	UINT32                          NvmeHCBase;
 
@@ -935,7 +935,7 @@ NvmeControllerInit (
 	// Dump NvmExpress Identify Controller Data
 	//
 	CopyMem (Sn, Private->ControllerData->Sn, sizeof (Private->ControllerData->Sn));
-	Sn[20] = 0;
+	Sn[8] = 0;
 	CopyMem (Mn, Private->ControllerData->Mn, sizeof (Private->ControllerData->Mn));
 	Mn[40] = 0;
 	DEBUG_NVME ((EFI_D_INFO, " == NVME IDENTIFY CONTROLLER DATA ==\n"));
@@ -952,6 +952,8 @@ NvmeControllerInit (
 	DEBUG_NVME ((EFI_D_INFO, "    NN        : 0x%x\n", Private->ControllerData->Nn));
 	DEBUG_NVME ((EFI_D_INFO, "    Oncs      : 0x%x\n", Private->ControllerData->Oncs));
 	DEBUG_NVME ((EFI_D_INFO, "    Oacs      : 0x%x\n", Private->ControllerData->Oacs));
+
+	smbios_set(TYPE_PRODUCT, offsetof(SMBIOS_TYPE1, SerialNumber), Sn);
 
 	//
 	// Create two I/O completion queues.
