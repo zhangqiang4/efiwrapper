@@ -803,7 +803,7 @@ NvmeControllerInit (
 	NVME_AQA                        Aqa;
 	NVME_ASQ                        Asq;
 	NVME_ACQ                        Acq;
-	UINT8                           Sn[9];
+	UINT8                           Sn[21];
 	UINT8                           Mn[41];
 	UINT32                          NvmeHCBase;
 
@@ -935,7 +935,7 @@ NvmeControllerInit (
 	// Dump NvmExpress Identify Controller Data
 	//
 	CopyMem (Sn, Private->ControllerData->Sn, sizeof (Private->ControllerData->Sn));
-	Sn[8] = 0;
+	Sn[20] = 0;
 	CopyMem (Mn, Private->ControllerData->Mn, sizeof (Private->ControllerData->Mn));
 	Mn[40] = 0;
 	DEBUG_NVME ((EFI_D_INFO, " == NVME IDENTIFY CONTROLLER DATA ==\n"));
