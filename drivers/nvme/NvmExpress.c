@@ -253,18 +253,6 @@ DiscoverAllNamespaces (
   return EFI_SUCCESS;
 }
 
-VOID
-EFIAPI
-MemoryFence (
-  VOID
-  )
-{
-  // This is a little bit of overkill and it is more about the compiler that it is
-  // actually processor synchronization. This is like the _ReadWriteBarrier
-  // Microsoft specific intrinsic
-  __asm__ __volatile__ ("":::"memory");
-}
-
 #define PCI_BASE_ADDRESSREG_OFFSET     0x10
 #define PCI_COMMAND_OFFSET             0x04
 #define PCI_DEVICE_ID_OFFSET           0x02

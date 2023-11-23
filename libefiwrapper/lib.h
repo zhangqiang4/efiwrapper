@@ -42,5 +42,6 @@ CHAR16 *str16dup(const CHAR16 *str);
 CHAR16 *str2str16_p(const char *str);
 
 EFI_STATUS crc32(const void *buf, size_t size, UINT32 *crc_p);
+VOID EFIAPI MemoryFence (VOID);
 
 #endif	/* _LIB_H_ */
