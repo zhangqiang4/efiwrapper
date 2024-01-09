@@ -41,6 +41,8 @@
 #define SBL_SERIAL_TYPE "serail_type"
 #define SBL_SERIAL_REGWIDTH "serail_regwidth"
 
+#define SBL_SERIAL_TYPE_DISABLED 0
+
 #ifndef SERIAL_BASEADDR
 #include <pci/pci.h>
 #define SERIAL_BASEADDR       GetPciUartBase(SERIAL_PCI_DID)
@@ -81,6 +83,10 @@ static EFI_STATUS s8250mem32_init(__attribute__((__unused__)) EFI_SYSTEM_TABLE *
 		s.regwidth = (UINT32)strtoull(val, NULL, 16);
 	} else {
 		s.regwidth = HW_SERIAL_REG_WIDTH;
+	}
+
+	if (s.type == SBL_SERIAL_TYPE_DISABLED) {
+		return EFI_SUCCESS;
 	}
 
 	lib_sysinfo.serial = &s;
