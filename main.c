@@ -37,12 +37,22 @@
 #include <ewdrv.h>
 #include <ewlog.h>
 #include <storage.h>
+#include <rdtsc.h>
+
+static uint64_t efiwarpper_start_tsc;
+uint64_t efiwrapper_tsc()
+{
+	return efiwarpper_start_tsc;
+}
+
 /* Entry point */
 int main(int argc, char **argv)
 {
 	EFI_HANDLE image = NULL;
 	EFI_SYSTEM_TABLE *st;
 	EFI_STATUS ret;
+
+	efiwarpper_start_tsc = rdtsc();
 
 	ret = efiwrapper_init(argc, argv, &st, &image);
 	if (ret) {
