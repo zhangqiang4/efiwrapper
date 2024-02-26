@@ -429,7 +429,6 @@ NvmeInitialize (
 
   Private->Buffer                    = (UINT8 *)aligned_buf;
   Private->Signature                 = NVME_CONTROLLER_PRIVATE_DATA_SIGNATURE;
-  Private->NvmeHCBase                = read32((void *)(NvmeHcPciBase + PCI_BASE_ADDRESSREG_OFFSET)) & 0xFFFFF000;
   Private->Passthru.Mode             = &Private->PassThruMode;
   Private->Passthru.PassThru         = (EFI_NVM_EXPRESS_PASS_THRU_PASSTHRU)NvmExpressPassThru;
   Private->Passthru.GetNextNamespace = NvmExpressGetNextNamespace;
