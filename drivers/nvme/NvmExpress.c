@@ -182,9 +182,9 @@ EnumerateNvmeDevNamespace (
     // Dump NvmExpress Identify Namespace Data
     //
     DEBUG_NVME ((EFI_D_INFO, " == NVME IDENTIFY NAMESPACE [%d] DATA ==\n", NamespaceId));
-    DEBUG_NVME ((EFI_D_INFO, "    NSZE        : 0x%x\n", NamespaceData->Nsze));
-    DEBUG_NVME ((EFI_D_INFO, "    NCAP        : 0x%x\n", NamespaceData->Ncap));
-    DEBUG_NVME ((EFI_D_INFO, "    NUSE        : 0x%x\n", NamespaceData->Nuse));
+    DEBUG_NVME ((EFI_D_INFO, "    NSZE        : 0x%llx\n", NamespaceData->Nsze));
+    DEBUG_NVME ((EFI_D_INFO, "    NCAP        : 0x%llx\n", NamespaceData->Ncap));
+    DEBUG_NVME ((EFI_D_INFO, "    NUSE        : 0x%llx\n", NamespaceData->Nuse));
     DEBUG_NVME ((EFI_D_INFO, "    LBAF0.LBADS : 0x%x\n", (NamespaceData->LbaFormat[0].Lbads)));
 
     //
@@ -194,16 +194,12 @@ EnumerateNvmeDevNamespace (
     Sn[20] = 0;
     CopyMem (Mn, Private->ControllerData->Mn, sizeof (Private->ControllerData->Mn));
     Mn[40] = 0;
-	snprintf(Device->ModelName, sizeof (Device->ModelName), (const char *)"%a-%a-%x", Sn, Mn, NamespaceData->Eui64);
+	snprintf(Device->ModelName, sizeof (Device->ModelName), (const char *)"%p-%p-%llx", Sn, Mn, NamespaceData->Eui64);
   }
 
 Exit:
   if (NamespaceData != NULL) {
     FreeZero (NamespaceData);
-  }
-
-  if (EFI_ERROR(Status) && (Device != NULL)) {
-    FreeZero (Device);
   }
   return Status;
 }

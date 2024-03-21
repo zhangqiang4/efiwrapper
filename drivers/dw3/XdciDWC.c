@@ -3356,11 +3356,6 @@ usb_xdci_core_reinit (
 	        return EFI_INVALID_PARAMETER;
 	}
 
-	if (local_core_handle == NULL) {
-	        DEBUG ((DEBUG_INFO, "dwc_xdci_core_init: Failed to allocate handle for xDCI\n"));
-	        return EFI_OUT_OF_RESOURCES;
-	}
-
 //   ZeroMem (local_core_handle, sizeof(XDCI_CORE_HANDLE));
 //
 //   local_core_handle->parent_handle = device_core_ptr;

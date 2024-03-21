@@ -323,7 +323,7 @@ WriteNvmeAdminSubmissionQueueBaseAddress (
 	if (EFI_ERROR (Status))
 		return Status;
 
-	DEBUG_NVME ((EFI_D_INFO, "Asq: %lx\n", *Asq));
+	DEBUG_NVME ((EFI_D_INFO, "Asq: %llx\n", *Asq));
 
 	return EFI_SUCCESS;
 }
@@ -382,7 +382,7 @@ WriteNvmeAdminCompletionQueueBaseAddress (
 		return Status;
 	}
 
-	DEBUG_NVME ((EFI_D_INFO, "Acq: %lxh\n", *Acq));
+	DEBUG_NVME ((EFI_D_INFO, "Acq: %llxh\n", *Acq));
 
 	return EFI_SUCCESS;
 }
@@ -928,7 +928,7 @@ NvmeControllerInit (
 	DEBUG_NVME ((EFI_D_INFO, "    PCI SSVID : 0x%x\n", Private->ControllerData->Ssvid));
 	DEBUG_NVME ((EFI_D_INFO, "    SN        : %s\n",   Sn));
 	DEBUG_NVME ((EFI_D_INFO, "    MN        : %s\n",   Mn));
-	DEBUG_NVME ((EFI_D_INFO, "    FR        : 0x%x\n", *((UINT64 *)Private->ControllerData->Fr)));
+	DEBUG_NVME ((EFI_D_INFO, "    FR        : 0x%llx\n", *((UINT64 *)Private->ControllerData->Fr)));
 	DEBUG_NVME ((EFI_D_INFO, "    RAB       : 0x%x\n", Private->ControllerData->Rab));
 	DEBUG_NVME ((EFI_D_INFO, "    IEEE      : 0x%x\n", *(UINT32 *)Private->ControllerData->Ieee_oui));
 	DEBUG_NVME ((EFI_D_INFO, "    AERL      : 0x%x\n", Private->ControllerData->Aerl));

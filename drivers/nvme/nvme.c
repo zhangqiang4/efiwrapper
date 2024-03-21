@@ -79,7 +79,7 @@ static EFI_STATUS _init(storage_t *s)
 		return ret;
 	}
 
-	DEBUG_NVME ((EFI_D_INFO, "Index 0 BlockNum is 0x%x\n", BlockInfo.BlockNum));
+	DEBUG_NVME ((EFI_D_INFO, "Index 0 BlockNum is 0x%llx\n", BlockInfo.BlockNum));
 	DEBUG_NVME ((EFI_D_INFO, "BlockSize is 0x%x\n", BlockInfo.BlockSize));
 	s->blk_cnt = BlockInfo.BlockNum;
 	s->blk_sz = BlockInfo.BlockSize;
