@@ -22,9 +22,9 @@
 #include "NvmCtrlLib.h"
 
 #define PCI_BASE_ADDRESSREG_OFFSET                  0x10
-
+#define MAX_NVME_DRIVER                             10
 NVME_CONTROLLER_PRIVATE_DATA        *mNvmeCtrlPrivate;
-NVME_DEVICE_PRIVATE_DATA            *mMultiNvmeDrive[10]; //maxium 10
+NVME_DEVICE_PRIVATE_DATA            *mMultiNvmeDrive[MAX_NVME_DRIVER];
 NvmCtrlPlatformInfo NvmCtrlInfo = { {1,0,0} };
 
 EFI_NVM_EXPRESS_PASS_THRU_PROTOCOL *NvmeGetPassthru(void)
@@ -41,6 +41,9 @@ EFI_STORAGE_SECURITY_COMMAND_PROTOCOL *NvmeGetSecurityInterface(void)
     return NULL;
 
   security = &device->StorageSecurity;
+  if (security == NULL)
+	  return NULL;
+
   if (security->SendData == NULL || security->ReceiveData == NULL)
     return NULL;
 
@@ -165,6 +168,10 @@ EnumerateNvmeDevNamespace (
     InitializeListHead (&Device->AsyncQueue);
 
     CopyMem (&Device->NamespaceData, NamespaceData, sizeof (NVME_ADMIN_NAMESPACE_DATA));
+    if (NamespaceId >= MAX_NVME_DRIVER) {
+      Status = EFI_DEVICE_ERROR;
+      goto Exit;
+    }
     mMultiNvmeDrive[NamespaceId - 1] = Device; //NamespaceId is 1 based
 
     //
@@ -422,6 +429,11 @@ NvmeInitialize (
   // Allocate 6 pages of memory, then map it for bus master read and write.
   //
   aligned_buf = nvme_alloc_pages(6);
+  if (aligned_buf == NULL) {
+    DEBUG_NVME ((EFI_D_ERROR, "NvmeInitialize: allocating pages failed!\n"));
+    Status = EFI_OUT_OF_RESOURCES;
+    goto Exit;
+  }
 
   Private->Buffer                    = (UINT8 *)aligned_buf;
   Private->Signature                 = NVME_CONTROLLER_PRIVATE_DATA_SIGNATURE;
