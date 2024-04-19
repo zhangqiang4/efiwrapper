@@ -835,12 +835,11 @@ _usb_init_xdci(EFI_USB_DEVICE_MODE_PROTOCOL *This)
 
 	/* configure xDCI as a system bus master */
 	pci_command = pci_read_config32(pci_dev, PCI_COMMAND);
-	pci_command |= PCI_COMMAND_MASTER;
+	pci_command |= PCI_COMMAND_MASTER | PCI_COMMAND_MEMORY;
 	pci_write_config32(pci_dev, PCI_COMMAND, pci_command);
 
 	/* get xHCI base address */
-	pci_find_device(INTEL_VID, XHCI_PID, &pci_dev);
-
+	if (pci_find_device(INTEL_VID, XHCI_PID, &pci_dev)) {
 	ewdbg("PCI xHCI [%x:%x] %d.%d.%d", INTEL_VID, XHCI_PID,
 	      PCI_BUS(pci_dev), PCI_SLOT(pci_dev), PCI_FUNC(pci_dev));
 
@@ -858,6 +857,7 @@ _usb_init_xdci(EFI_USB_DEVICE_MODE_PROTOCOL *This)
 	/* disable xHCI bus master and I/O access */
 	pci_command &= ~(PCI_COMMAND_MASTER | PCI_COMMAND_MEMORY);
 	pci_write_config32(pci_dev, PCI_COMMAND, pci_command);
+	}
 
 	/* init device driver */
 	status = dwc_xdci_core_init(&config_params, device_core_ptr, &core_handle);
